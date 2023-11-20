@@ -19,9 +19,11 @@ Think carefully about the corner cases!
 contract StakingContract {
 
         ERC20 public stakingToken;
+        uint256 public tokenBalance;
 
-        constructor(ERC20 _stakingToken) {
+        constructor(ERC20 _stakingToken, uint256 _tokenBalance) {
                 stakingToken = _stakingToken;
+                tokenBalance = _tokenBalance;
         }
 
 
