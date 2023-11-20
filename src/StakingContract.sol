@@ -21,13 +21,12 @@ contract StakingContract {
         struct Stake {
                 address owner;
                 uint256 amount;
+                uint256 beginDate;
         }
 
         struct StakingPool {
                 uint256 id;
                 uint256 totalStaked;
-                uint256 beginDate;
-                uint256 endDate;
                 uint256 reward;
                 uint256 totalReward;
                 uint256 totalStakers;
@@ -49,28 +48,34 @@ contract StakingContract {
 
         function createStakingPool(uint256 _id,
                 uint256 _totalStaked,
-                uint256 _beginDate,
-                uint256 _endDate,
                 uint256 _reward,
                 uint256 _totalReward,
                 uint256 _totalStakers) public {
                 StakingPool storage stakingPool = stakingPools[_id];
                 stakingPool.id = _id;
                 stakingPool.totalStaked = _totalStaked;
-                stakingPool.beginDate = _beginDate;
-                stakingPool.endDate = _endDate;
                 stakingPool.reward = _reward;
                 stakingPool.totalReward = _totalReward;
                 stakingPool.totalStakers = _totalStakers;
         }
 
         function stakeTokens(uint256 _id, uint256 amount) public {
+                require(amount > 0, "amount cannot be 0");
                 StakingPool storage stakingPool = stakingPools[_id];
                 Stake storage stake = Stake(msg.sender, amount);
+                stake.beginDate = block.timestamp;
                 stakingPool.stakes[msg.sender] = stake;
                 stakingPool.totalStaked += amount;
                 stakingPool.totalStakers += 1;
                 stakingToken.transferFrom(msg.sender, address(this), amount);
+        }
+
+        function unstakeTokens(uint256 _id) public {
+                StakingPool storage stakingPool = stakingPools[_id];
+                Stake storage stake = stakingPool.stakes[msg.sender];
+                require(block.timestamp == stake.beginDate + 7 days);
+                uint256 rewardAmount = stake.amount / stakingPool.totalStaked;
+                IERC20(stakingToken).transfer(msg.sender, rewardAmount);
         }
 
 
