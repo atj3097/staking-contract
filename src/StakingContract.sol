@@ -18,12 +18,42 @@ Think carefully about the corner cases!
 
 contract StakingContract {
 
+        struct Stake {
+                address owner;
+                uint256 amount;
+        }
+
+        struct StakingPool {
+                uint256 id;
+                uint256 totalStaked;
+                uint256 beginDate;
+                uint256 endDate;
+                uint256 reward;
+                uint256 totalReward;
+                uint256 totalStakers;
+                mapping(address => Stake) stakes;
+        }
+
         ERC20 public stakingToken;
         uint256 public tokenBalance;
+        uint256 public beginDate;
 
-        constructor(ERC20 _stakingToken, uint256 _tokenBalance) {
+
+        constructor(ERC20 _stakingToken,
+                uint256 _tokenBalance,
+                uint256 _beginDate) {
                 stakingToken = _stakingToken;
                 tokenBalance = _tokenBalance;
+                beginDate = _beginDate;
+        }
+
+        function stakeTokens(uint256 _id, uint256 amount) public {
+                StakingPool storage stakingPool = stakingPools[_id];
+                Stake storage stake = Stake(msg.sender, amount);
+                stakingPool.stakes[msg.sender] = stake;
+                stakingPool.totalStaked += amount;
+                stakingPool.totalStakers += 1;
+                stakingToken.transferFrom(msg.sender, address(this), amount);
         }
 
 
