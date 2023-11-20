@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+import "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+
 
 /*
 Stake Together
@@ -15,7 +18,11 @@ Think carefully about the corner cases!
 
 contract StakingContract {
 
+        ERC20 public stakingToken;
 
+        constructor(ERC20 _stakingToken) {
+                stakingToken = _stakingToken;
+        }
 
 
 }
