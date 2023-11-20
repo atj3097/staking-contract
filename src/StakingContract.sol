@@ -47,6 +47,23 @@ contract StakingContract {
                 beginDate = _beginDate;
         }
 
+        function createStakingPool(uint256 _id,
+                uint256 _totalStaked,
+                uint256 _beginDate,
+                uint256 _endDate,
+                uint256 _reward,
+                uint256 _totalReward,
+                uint256 _totalStakers) public {
+                StakingPool storage stakingPool = stakingPools[_id];
+                stakingPool.id = _id;
+                stakingPool.totalStaked = _totalStaked;
+                stakingPool.beginDate = _beginDate;
+                stakingPool.endDate = _endDate;
+                stakingPool.reward = _reward;
+                stakingPool.totalReward = _totalReward;
+                stakingPool.totalStakers = _totalStakers;
+        }
+
         function stakeTokens(uint256 _id, uint256 amount) public {
                 StakingPool storage stakingPool = stakingPools[_id];
                 Stake storage stake = Stake(msg.sender, amount);
